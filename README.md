@@ -20,5 +20,5 @@ The biological questions I aim to explore with this data are:
 Calculations:
 This first project includes: (1) data exploration (e.g., summary statistics and the first and last few rows of the data); (2) a data dictionary describing each column with basic descriptive
 statistics; (3) boxplots depicting petal and sepal measurements by species using a colorblind-friendly palette, with species comparisons and statistical significance added; and (4) basic
-statistical analyses, including normality tests, skewness, kurtosis, Q–Q plots, ANOVA comparisons among species, correlations between petal and sepal measurements for each species, and simple
+statistical analyses, including normality tests, skewness, kurtosis, Q–Q plots, group comparisons among species, correlations between petal and sepal measurements for each species, and simple
 and linear mixed-effects regression analyses with interactions to address research questions 3 and 4.
