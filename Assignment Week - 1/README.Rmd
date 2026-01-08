@@ -1,0 +1,55 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# BIO 708 - Week 1
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of BIO 708 – Week 1 is to explore a dataset, formulate biological questions, and upload a text file or spreadsheet along with an R script that reads the data and performs the calculations. For the portion involving the text file or spreadsheet and the R script, I used R Markdown in this README file so that the text and code portions are separated (see Week 1 – Assignment.Rmd for code). Although the code still contains some text, this file provides a comprehensive explanation of the data and the steps taken.
+
+# Data choice
+I used the *iris* dataset, which is a built-in dataset in the R environment (from *datasets* package). It is a dataframe that includes the iris sepals and petals measurements. I used this dataset for the first week of the assignment, as I had not decided on my data for the semester yet (I will change later and will follow the same steps for that data).
+
+# Data context
+This dataset includes petal and sepal length and width measurements for three iris species: Setosa, Versicolor, and Virginica. It contains 150 observations, with 50 observations per species, and has no missing values (so no need to run na.rm = TRUE in analysis or other type of missing data handling). 
+
+- Descriptives follows as: 
+* There are 6 columns and 150 observations. 
+* 150 different iris flowers were used in this data (see data ID section from the data dictionary). 
+* Some stats (also see dictionary_iris.csv file for more details): 
+ 1. Sepal length ranges from 4.3 to 7.9 cm, both median and mean being 6 cm
+ 2. Sepal width data ranged from 2 to 4.4 com, both mean and median value being 3
+ 3. Petal length ranges from from 1 to 6.9 cm,  both mean and median value being 4
+ 4. Petal width data ranged from 0.1 to 2.5 cm and both mean and median being 1
+ 5. There are 3 types of iris used in this dataset:setosa, versicolor, virginica, 50 for each 
+ 
+# Biological questions:
+1) Are there species-based differences in petal and sepal measurements? If so, which species has the longest petals, and which has the widest petals? (presented in both boxplots and
+   calculations)
+2) Are petal measurements associated with sepal length and width?
+3) Does petal length predict sepal length, and does this relationship depend on species?
+4) Does petal width predict sepal width, and does this relationship depend on species?
+
+# Calculations
+1) It starts with data exploration such as printing summary statistics, investigation of first and last few rows of the data
+
+2) Second step includes creating a a data dictionary describing each column of the dataframe with simple descriptions along with basic calculations for the column (e.g. min, mac value, mean, median, missing value information)
+
+3) Third step includes visualizing the data using boxplots depicting petal and sepal measurements by species using a colorblind-friendly palette, with species comparisons and statistical significance added
+
+4) The fourth step includes basic statistical analyses, 
+* such as normality tests, skewness and kurtosis calculations, and Q–Q plots to visualize the data.
+* Next, group comparisons among species (e.g., petal width differences) were conducted based on the normality results: ANOVA was used for columns that met the normality assumption, while the Kruskal–Wallis test was applied for those that did not. 
+* Correlations between petal and sepal measurements were then calculated for each species. 
+* Finally, simple linear regression and generalized linear models (to account for non-normal data), including interactions with Species, were used to address research questions 3 and 4.

@@ -1,0 +1,269 @@
+---
+title: "Week 1 - Assignment"
+author: "Egurcan"
+date: "2026-01-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Packages 
+```{r}
+install.packages("datasets")
+library(datasets)
+install.packages("tidyverse")
+library(tidyverse)
+library(ggplot2)
+install.packages("ggpubr")
+library(ggpubr)
+install.packages("moments")
+library(moments)
+library(lme4)
+install.packages("report")
+library("report") 
+install.packages("usethis")
+library(usethis)
+install.packages("Hmisc")
+library(Hmisc)
+install.packages("ggstatsplot")
+library(ggstatsplot)
+install.packages("correlation")
+library(correlation)
+```
+
+# Set Working Directory for reproducible environment
+```{r}
+# Get the working directory and set it to work with it smoothly 
+current_script_dir <- getwd()
+setwd(current_script_dir)
+```
+
+# Create a README file
+I commented this since I created it 
+```{r}
+# usethis::use_readme_rmd()
+```
+
+# Load Data
+```{r}
+data(iris)
+```
+
+# Investigate data 
+```{r}
+# Show data frame
+View(iris)
+
+# Explore data types
+str(iris)
+
+# Get summar
+summary(iris)
+
+# View first couple data points OR last
+head(iris, n= 10) # first 10 dat apoints
+tail(iris, n= 15) # last 15 data points
+```
+# Context of the Data
+## Visualizing the data
+The data were plotted using boxplots for each measurement, with ANOVA comparisons added to the ggplot and significant results indicated using significance levels ().*
+```{r}
+# Petal Length
+ggplot(iris, aes(x = Species, y= Petal.Length, fill = Species)) +
+  geom_boxplot(outlier.colour= "red") +
+  theme_minimal() +
+  labs(x = "Type of Species",
+       y= "Petal Length (in cm)") +
+  scale_fill_brewer(palette = "Dark2",
+                    name = "Species Type",
+                    labels = c("Setosa", "Versicolor", "Virginica")) +
+  ggpubr::stat_compare_means(method = "aov",label = "p.signif", hide.ns = TRUE)
+
+# Sepal Length
+ggplot(iris, aes(x = Species, y= Sepal.Length, fill = Species)) +
+  geom_boxplot(outlier.colour= "red") +
+  theme_minimal() +
+  labs(x = "Type of Species",
+       y= "Petal Length (in cm)") +
+  scale_fill_brewer(palette = "Dark2",
+                    name = "Species Type",
+                    labels = c("Setosa", "Versicolor", "Virginica")) +
+  ggpubr::stat_compare_means(method = "aov",label = "p.signif", hide.ns = TRUE)
+
+# Sepal Width
+ggplot(iris, aes(x = Species, y= Sepal.Width, fill = Species)) +
+  geom_boxplot(outlier.colour= "red") +
+  theme_minimal() +
+  labs(x = "Type of Species",
+       y= "Petal Length (in cm)") +
+  scale_fill_brewer(palette = "Dark2",
+                    name = "Species Type",
+                    labels = c("Setosa", "Versicolor", "Virginica")) +
+  ggpubr::stat_compare_means(method = "aov",label = "p.signif", hide.ns = TRUE) 
+
+# Petal Width
+ggplot(iris, aes(x = Species, y= Petal.Width, fill = Species)) +
+  geom_boxplot(outlier.colour= "red") +
+  theme_minimal() +
+  labs(x = "Type of Species",
+       y= "Petal Length (in cm)") +
+  scale_fill_brewer(palette = "Dark2",
+                    name = "Species Type",
+                    labels = c("Setosa", "Versicolor", "Virginica")) +
+  ggpubr::stat_compare_means(method = "aov",label = "p.signif", hide.ns = TRUE)
+```
+
+
+# Calculations
+## Normality Assumption
+The results showed that Sepal.Width is the only 
+```{r}
+## Sepal Length
+# ---------
+shapiro.test(iris$Sepal.Length) # Not normal disribution
+# Depiction
+qqnorm(iris$Petal.Width)
+qqline(iris$Petal.Width, col = "red", lwd = 2)
+# Skewness
+moments::skewness(iris$Sepal.Length) 
+# Kurtosis
+moments::kurtosis(iris$Sepal.Length) 
+
+## Petal Length
+# -------------------------
+shapiro.test(iris$Petal.Length) # Not normal disribution
+qqnorm(iris$Petal.Length)
+qqline(iris$Petal.Length, col = "red", lwd = 2)
+moments::skewness(iris$Petal.Length) 
+moments::kurtosis(iris$Petal.Length) 
+
+## Sepal Width
+# -------------
+shapiro.test(iris$Sepal.Width)  # Normal disribution
+qqnorm(iris$Sepal.Width)
+qqline(iris$Sepal.Width, col = "red", lwd = 2)
+moments::skewness(iris$Sepal.Width) 
+moments::kurtosis(iris$Sepal.Width) 
+
+## Petal Width
+# --------
+shapiro.test(iris$Petal.Width)  # Not normal disribution
+qqnorm(iris$Petal.Width)
+qqline(iris$Petal.Width, col = "red", lwd = 2)
+moments::skewness(iris$Petal.Width) 
+moments::kurtosis(iris$Petal.Width) 
+```
+## Group Comparisons
+Normality test results showed that only Sepal.Width is approximately normally distributed. Therefore, I will apply ANOVA for Sepal.Width and use the Kruskal-Wallis test for the other three measurements.
+```{r}
+kruskal.test(Sepal.Length ~ Species, data= iris)
+# Sig group differences, run pairwise group comparisons
+pairwise.wilcox.test(iris$Sepal.Length, iris$Species)
+
+kruskal.test(Petal.Length ~ Species, data= iris)
+# Sig group differences, run pairwise group comparisons
+pairwise.wilcox.test(iris$Petal.Length, iris$Species)
+
+kruskal.test(Petal.Width ~ Species, data= iris)
+# Sig group differences, run pairwise group comparisons
+pairwise.wilcox.test(iris$Sepal.Width, iris$Species)
+
+SW_aov <- aov(Sepal.Width ~ Species, data= iris)
+summary(SW_aov)
+```
+## Correlations
+```{r}
+# Get all the correlations
+correlation(iris, include_factors = TRUE, method = "auto") # using automated method
+
+# Visualize with all three correlation options
+ggscatterstats(data = iris, x = Sepal.Length, y = Petal.Width, bf.message = FALSE, marginal = FALSE) +
+  ylab("Petal Width (in cm)") +
+  xlab("Sepal Length (in cm)") 
+
+ggscatterstats(data = iris, x = Sepal.Length, y = Sepal.Width, bf.message = FALSE, marginal = FALSE) +
+  xlab("Sepal Length (in cm)") +
+  ylab("Sepal Width (in cm)") 
+
+ggscatterstats(data = iris, x = Sepal.Length, y = Petal.Length, bf.message = FALSE, marginal = FALSE) +
+  xlab("Sepal Length (in cm)") +
+  ylab("Petal Length (in cm)") 
+```
+
+## Regressions
+- Correlation results showed some species have relationships (usually *p* < .001) between petal and sepal measurements, so I will use Species column as an interaction factor.
+
+### Linear Regression 
+The model results for Sepal.Width (predicted by Petal.Width and Petal.Width and Species interaction). 
+* The model results follows: R2 = 0.54, Adjusted R2= 0.53, F(5, 144) = 34.01, p < .001
+```{r}
+# Run linear regression for Sepal.Width (normal disribution)
+SW_lm <- lm(Sepal.Width ~ Petal.Width * Species, data = iris)
+summary(SW_lm)
+# get the report for this model
+report(SW_lm)
+```
+
+### Generalized Linear Model (GLM) 
+* Since Sepal.Length, Petal.Length, and Petal.Width are not normally disributed, I will run simple GLM for these depandant variables 
+```{r}
+# Run glm 
+SL_glm <- glm(Sepal.Length ~ Petal.Length * Species, data = iris)
+summary(SL_glm)
+# get the report for this model
+report(SL_glm)
+
+# Run glm 
+PL_glm <- glm(Petal.Length ~ Sepal.Length * Species, data = iris)
+summary(PL_glm)
+# get the report for this model
+report(PL_glm)
+
+
+# Run glm 
+PW_glm <- glm(Petal.Width ~ Sepal.Width * Species, data = iris)
+summary(PW_glm)
+# get the report for this model
+report(PW_glm)
+```
+```{r}
+# Run glm 
+SL_glm <- glm(Sepal.Length ~ Petal.Width * Species, data = iris)
+summary(SL_glm)
+# get the report for this model
+report(SL_glm)
+
+# Run glm 
+SL_glm <- glm(Sepal.Width ~ Petal.Length * Species, data = iris)
+summary(SL_glm)
+# get the report for this model
+report(SL_glm)
+
+```
+
+## Data dictionary
+I also like to create a data dictionary for reproducibility, as it helps other researchers to understand my data better. It also helps me to add descriptions for each column to make it clear for the reader what we measured, plus it calculates descriptive values to give the sense of how the data looks. Then I save it as CSV (as it's a more desirable format for reproducibility) and add this data to my GitHub account.
+```{r}
+# install.packages("datadictionary")
+# library(datadictionary)
+
+# Add ID variable (optional)
+# iris$id <- seq_len(nrow(iris))
+
+# Make as first column
+# iris <- iris %>% relocate(id, .before = everything())
+
+# define the labels
+# var_labels <- c(id = "id",
+                # Sepal.Length = "Measurement of sepal length (in cm)",
+                # Sepal.Width = "Measurement of sepal width (in cm)",
+                # Petal.Length = "Measurement of petal length (in cm)",
+                # Petal.Width = "Measurement of petal width (in cm)",
+                # Species = "Type of iris")
+
+# dictionary_iris <- create_dictionary(iris, var_labels = var_labels, id_var = "id")
+# write.csv(dictionary_iris, "dictionary_iris.csv")
+```
+ 
